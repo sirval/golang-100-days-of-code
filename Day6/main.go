@@ -2,53 +2,26 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
+const conferenceTicket uint = 50
+
+var conferenceName string = "Go Conference"
+var remainingTicket uint
+var bookings = []string{}
+
 func main() {
-	conferenceName := "Go Conference"
-	const conferenceTicket uint = 50
-	var remainingTicket uint
-	bookings := []string{}
-
-	fmt.Printf("conferenceTicket is %T, remainingTicket is %T, conferenceName is %T\n", conferenceTicket, remainingTicket, conferenceName)
-	fmt.Printf("Welcome to %v booking application\n", conferenceName)
-	fmt.Printf("We have total of %v tickets and %v are still available.\n", conferenceTicket, remainingTicket)
-	fmt.Println("Get your tickets here to attend")
-
+	greet(conferenceTicket, remainingTicket, conferenceName)
 	for {
-		var firstName string
-		var lastName string
-		var email string
-		var userTickets uint
-		var country string
-
-		fmt.Println("Enter your first name:")
-		fmt.Scan(&firstName)
-		fmt.Println("Enter your last name:")
-		fmt.Scan(&lastName)
-		fmt.Println("Enter your email:")
-		fmt.Scan(&email)
-		fmt.Println("Enter your country:")
-		fmt.Scan(&country)
-		fmt.Println("How many tickets would you like to buy:")
-		fmt.Scan(&userTickets)
+		firstName, lastName, email, country, userTickets := getUserInputs()
 		remainingTicket = conferenceTicket - userTickets
 
-		isValidName := len(firstName) >= 2 && len(lastName) >= 2
-		isValidEmail := strings.Contains(email, "@")
-		isValidTicketNumber := userTickets > 0 &&
-			userTickets <= conferenceTicket &&
-			userTickets <= remainingTicket
+		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lastName, email, userTickets)
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 			bookings = append(bookings, firstName+" "+lastName)
+			firstNames := getFirstName(bookings)
 
-			firstNames := []string{}           //Slice
-			for _, booking := range bookings { //underscore tells go to overlook a variable
-				var names = strings.Fields(booking)
-				firstNames = append(firstNames, names[0])
-			}
 			fmt.Printf("First names in the booking list are: %v\n", firstNames)
 			notifyByCountry(country, firstName, lastName, conferenceName)
 		} else {
@@ -71,7 +44,7 @@ func notifyByCountry(country string, firstName string, lastName string, confName
 		fmt.Printf("We're thrilled to have you %v %v from %v in the 2023 %v\n", firstName, lastName, country, confName)
 	case "Ghana":
 		fmt.Printf("We're thrilled to have you %v %v from %v in the 2023 %v\n", firstName, lastName, country, confName)
-	case "Israel":
+	case "Israel", "USA":
 		fmt.Printf("We're thrilled to have you %v %v from %v in the 2023 %v\n", firstName, lastName, country, confName)
 	default:
 		fmt.Println("No valid country selected")
